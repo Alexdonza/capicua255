@@ -1,1 +1,161 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAPICUA25 - El Mejor Dominó</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ================= HOME SCREEN ================= -->
+  <div class="screen active" id="screen-home">
+    <div class="home-wrap">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-dice">🁢</span>
+          <div class="brand-text">
+            <b>CAPICUA<span>25</span></b>
+            <div class="brand-sub">EL MEJOR DOMINÓ</div>
+          </div>
+        </div>
+        <div class="nav-item active" data-nav="inicio"><span class="ic">🏠</span>Inicio</div>
+        <div class="nav-item" data-nav="jugar"><span class="ic">🎲</span>Jugar</div>
+        <div class="nav-item" data-nav="ranking"><span class="ic">⭐</span>Ranking</div>
+        <div class="nav-item" data-nav="ayuda"><span class="ic">❓</span>Ayuda</div>
+        <div class="sidebar-flag"></div>
+      </aside>
+
+      <main class="main-area">
+        <div class="flag-strip"></div>
+        <div class="topbar">
+          <div id="userBox" class="hidden"></div>
+          <button class="btn btn-ghost" id="btnIngresar">👤 INGRESAR CON GOOGLE</button>
+        </div>
+
+        <div class="hero">
+          <div class="hero-tiles">🁢🁫</div>
+          <div class="hero-title">CAPICUA<span>25</span></div>
+          <div class="hero-tagline">— EL MEJOR DOMINÓ —</div>
+          <div class="flag-chip"></div>
+        </div>
+
+        <div class="panel">
+          <div class="row-select">
+            <div class="label">👥 RIVALES</div>
+            <select id="selRivals">
+              <option value="online">Jugadores en línea (buscar partida)</option>
+              <option value="bots">Jugadores CPU (instantáneo)</option>
+            </select>
+          </div>
+          <button class="play-btn" id="btnJugar">JUGAR</button>
+          <div id="queueStatus" class="queue-status hidden"></div>
+        </div>
+
+        <div class="quick-cards">
+          <div class="qcard">
+            <div class="qtitle">🏆 100% EN VIVO</div>
+            <div class="qdesc">Multijugador real por WebSockets</div>
+          </div>
+          <div class="qcard">
+            <div class="qtitle">🔐 GOOGLE LOGIN</div>
+            <div class="qdesc">Tu cuenta se crea automáticamente</div>
+          </div>
+          <div class="qcard" data-nav="ranking">
+            <div class="qtitle">🎖️ RANKING</div>
+            <div class="qdesc">Sube en la tabla de posiciones</div>
+          </div>
+          <div class="qcard">
+            <div class="qtitle">🤖 CPU DISPONIBLE</div>
+            <div class="qdesc">Juega solo mientras llegan rivales</div>
+          </div>
+        </div>
+
+        <div class="panel hidden" id="rankingPanel">
+          <h3 style="margin-bottom:10px;">Ranking de jugadores</h3>
+          <div id="rankingList"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= GAME SCREEN ================= -->
+  <div class="screen" id="screen-game">
+    <div class="game-wrap">
+      <div class="game-top">
+        <div class="g-brand">🁢 CAPICUA<span style="color:var(--red-bright)">25</span><small>EL MEJOR DOMINÓ</small></div>
+        <button class="g-btn" id="btnAyuda">❓ AYUDA</button>
+        <button class="g-btn red" id="btnPuntos">🏆 PUNTOS</button>
+        <button class="g-btn" id="btnMenu">☰ SALIR</button>
+        <div class="g-info">Sala <span id="gameId">-</span><br><span id="modeLabel">-</span></div>
+      </div>
+
+      <div class="table-area" id="tableArea">
+        <div class="hud-box hud-mode">
+          <div class="badge" id="hudModeBadge">EN VIVO</div>
+          <div class="hud-level" id="hudLevel">Ronda 1</div>
+        </div>
+        <div class="hud-box hud-points">
+          <div class="hud-title">PUNTOS PARA GANAR</div>
+          <div class="val">200</div>
+        </div>
+
+        <div class="player-badge pos-top" id="badge-2">
+          <div class="avatar">👤</div><span class="pname">Jugador 2</span><span class="score" id="score-2">0</span>
+        </div>
+        <div class="hand-row hand-top" id="hand-2"></div>
+
+        <div class="player-badge pos-left" id="badge-1">
+          <div class="avatar">👤</div><span class="pname">Jugador 1</span><span class="score" id="score-1">0</span>
+        </div>
+        <div class="hand-row hand-left" id="hand-1"></div>
+
+        <div class="player-badge pos-right" id="badge-3">
+          <div class="avatar">👤</div><span class="pname">Jugador 3</span><span class="score" id="score-3">0</span>
+        </div>
+        <div class="hand-row hand-right" id="hand-3"></div>
+
+        <div class="board-zone" id="boardZone"></div>
+
+        <div class="player-badge pos-bottom you" id="badge-0">
+          <div class="avatar">👤</div><span class="pname">Tú</span><span class="score" id="score-0">0</span>
+        </div>
+        <div class="hand-row hand-bottom" id="hand-0"></div>
+      </div>
+
+      <div class="bottom-bar">
+        <button class="g-btn" id="btnChat">💬 CHAT</button>
+        <div class="turn-indicator" id="turnIndicator"><span class="turn-dot"></span> Esperando...</div>
+        <button class="g-btn" id="btnPasar" disabled>↪ PASAR</button>
+        <button class="g-btn red" id="btnJugarTile" disabled>🁢 JUGAR</button>
+      </div>
+
+      <div id="chatPanel" class="chat-panel hidden">
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Escribe un mensaje...">
+          <button id="btnChatSend">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<div id="roundOverlay" class="hidden">
+  <div class="round-card">
+    <h2 id="roundTitle">¡Ronda terminada!</h2>
+    <p id="roundDesc"></p>
+    <button id="btnCloseRoundOverlay">Continuar</button>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
